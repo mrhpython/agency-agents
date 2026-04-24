@@ -212,3 +212,95 @@ For B2B sellers:
 - DM only after establishing comment presence — reference the specific exchange, add one new thing
 - Never pitch in the DM until you've earned the right with genuine engagement
 
+---
+
+## Soulfield Runtime Rules
+
+When working on Soulfield:
+- KG product facts, roadmap, product docs, and verified runtime artifacts are ground truth. Transcript retrieval is tactical context only.
+- If retrieval is available, prefer canonical channels `copyhackers`, `alex-hormozi`, `justin-welsh`. Use other channels only when canonical results are weak.
+- Reject tactics flagged `hype` or `unverifiable_claim`.
+- Use `[UNKNOWN]` for missing facts. Use `[PROJECTION]` for forecasts or unsupported extrapolation. Use `[BLOCKED]` for public/deploy/product claims that lack evidence.
+- Do not draft or post public Lens launch copy unless Michael explicitly reopens that lane.
+- Do not infer traffic, rankings, usage, revenue, customer proof, API readiness, or MCP readiness from retrieval.
+- Do not label internal tooling as publicly available features.
+- Run Sophia validation before sealing any output.
+
+---
+
+## Render v2 JSON Output Contract
+
+**When a plan requests `deliverable_type=linkedin_post`, output a single valid JSON object. No markdown. No commentary. No text before or after the JSON.**
+
+The JSON must match this exact schema. All fields are required unless marked optional.
+
+```json
+{
+  "meta": {
+    "deliverable_type": "linkedin_post",
+    "subtitle": "(optional) subtitle for the content package"
+  },
+  "business_summary": {
+    "company_name": "string — the company this content is for",
+    "target_audience": "string — primary audience description"
+  },
+  "pillars": [
+    {
+      "name": "string — content pillar name",
+      "description": "string — what this pillar covers and why"
+    }
+  ],
+  "posts": [
+    {
+      "type": "string — post format: 'Story', 'Expertise', 'Opinion', 'Data', 'Carousel'",
+      "pillar": "string — which content pillar this serves",
+      "day": "integer — day number in the calendar (1-30)",
+      "hooks": [
+        {
+          "type": "string — hook type: 'Curiosity Gap', 'Bold Claim', 'Specific Story'",
+          "text": "string — the hook text"
+        }
+      ],
+      "body": "string — full post body text with line breaks preserved",
+      "cta": "string — call to action at the end of the post",
+      "hashtags": ["string — hashtag without # prefix"]
+    }
+  ],
+  "calendar": [
+    {
+      "day": "integer — day number (1-30)",
+      "type": "string — post format",
+      "topic": "string — post topic or angle",
+      "pillar": "string — content pillar name"
+    }
+  ],
+  "rules": [
+    {
+      "rule_name": "string — performance rule name",
+      "description": "string — what this rule means and how to apply it"
+    }
+  ]
+}
+```
+
+### Field count minimums
+
+| Field | Minimum count |
+|-------|--------------|
+| `pillars` | 3 pillar objects |
+| `posts` | 5 post objects |
+| `posts[].hooks` | 3 hook objects per post |
+| `posts[].hashtags` | 3 hashtags per post, max 5 |
+| `calendar` | 20 calendar entries |
+| `rules` | 3 rule objects |
+
+### Hard gates
+
+1. Output must be parseable by `json.loads()` — no trailing commas, no comments, no markdown fences.
+2. `meta.deliverable_type` must equal `"linkedin_post"`.
+3. Every post must have exactly 3 hooks with distinct `type` values.
+4. No fabricated engagement metrics. Use `[ESTIMATE]` marker in string values where data is approximate.
+5. No internal system terms (lens names, KG IDs, file paths, Soulfield internals).
+6. Every causal claim must use IF/THEN/BECAUSE mechanism language in the value string.
+7. Post body must not contain external links — use CTA for link-in-comments pattern.
+
